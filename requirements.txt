@@ -1,5 +1,5 @@
-fastapi 
-uvicorn 
-paho-mqtt 
-psycopg2-binary 
-python-dotenv
+fastapi==0.100.0
+uvicorn[standard]==0.22.0
+paho-mqtt==1.6.1
+psycopg2-binary==2.9.10
+pydantic==1.10.11
