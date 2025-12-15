@@ -1,31 +1,37 @@
-# app/config.py
 import os
-from pydantic import BaseSettings, Field
+from typing import List
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=os.getenv("ENV_FILE", ".env"),
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+    )
+
     APP_NAME: str = "Lifeline IoT Accident Alert System"
+    VERSION: str = "1.0.0"
     ENV: str = "production"
 
-    # Postgres
-    DB_HOST: str = Field("localhost", env="DB_HOST")
-    DB_PORT: int = Field(5432, env="DB_PORT")
-    DB_NAME: str = Field("lifeline", env="DB_NAME")
-    DB_USER: str = Field("postgres", env="DB_USER")
-    DB_PASSWORD: str = Field(..., env="DB_PASSWORD")
+    ALLOWED_ORIGINS: List[str] = ["*"]
 
-    # MQTT
-    MQTT_BROKER: str = Field("broker.hivemq.com", env="MQTT_BROKER")
-    MQTT_PORT: int = Field(1883, env="MQTT_PORT")
-    MQTT_TOPIC: str = Field("lifeline/iot/data", env="MQTT_TOPIC")
+    DB_HOST: str = Field("localhost")
+    DB_PORT: int = Field(5432)
+    DB_NAME: str = Field("lifeline")
+    DB_USER: str = Field("postgres")
+    DB_PASSWORD: str
 
-    # pool
-    DB_MINCONN: int = Field(1, env="DB_MINCONN")
-    DB_MAXCONN: int = Field(5, env="DB_MAXCONN")
+    DB_MINCONN: int = Field(1, ge=1)
+    DB_MAXCONN: int = Field(10, ge=1)
 
-    class Config:
-        env_file = os.getenv("ENV_FILE", ".env")
-        env_file_encoding = "utf-8"
+    MQTT_BROKER: str = Field("broker.hivemq.com")
+    MQTT_PORT: int = Field(1883)
+    MQTT_TOPIC: str = Field("lifeline/iot/data")
+
+    IMPACT_THRESHOLD: float = Field(30.0, gt=0)
+    TILT_THRESHOLD: float = Field(200.0, gt=0)
 
 
 settings = Settings()

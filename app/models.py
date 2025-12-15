@@ -1,23 +1,24 @@
-# app/models.py
-from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field, ConfigDict, StrictFloat, StrictStr
 
 
 class SensorPayload(BaseModel):
-    device_id: str = Field(..., example="device-1234")
-    accel_x: float
-    accel_y: float
-    accel_z: float
-    gyro_x: float
-    gyro_y: float
-    gyro_z: float
-    latitude: float
-    longitude: float
-    speed: float
+    model_config = ConfigDict(extra="forbid")
+
+    device_id: StrictStr = Field(..., min_length=3, max_length=64)
+    accel_x: StrictFloat
+    accel_y: StrictFloat
+    accel_z: StrictFloat
+    gyro_x: StrictFloat
+    gyro_y: StrictFloat
+    gyro_z: StrictFloat
+    latitude: StrictFloat = Field(..., ge=-90, le=90)
+    longitude: StrictFloat = Field(..., ge=-180, le=180)
+    speed: StrictFloat = Field(..., ge=0)
     timestamp: Optional[datetime] = None
 
 
 class HealthResponse(BaseModel):
-    status: str
-    details: dict | None = None
+    status: StrictStr
+    details: Optional[Dict[str, Any]] = None
