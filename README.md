@@ -4,6 +4,9 @@ It collects sensor data from IoT devices (accelerometer, gyroscope, GPS), detect
 
 ---
 
+```
+This project is made for backend to be used in IOT project
+```
 ## 🔥 Features
 
 - 📡 **IoT Integration via MQTT** (ESP32 / NodeMCU compatible)  
